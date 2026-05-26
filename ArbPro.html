@@ -1,0 +1,1346 @@
+cat > /mnt/user-data/outputs/ArbEdge-Pro-v2.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="theme-color" content="#060608"/>
+<title>ArbEdge Pro — Australian Arbitrage Scanner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060608;--bg2:#0d0d10;--bg3:#131318;--bg4:#1a1a22;--bg5:#22222c;--bg6:#2a2a36;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);--border3:rgba(255,255,255,0.18);
+  --text:#eeeef2;--text2:#9090a0;--text3:#4a4a60;--text4:#333345;
+  --green:#00e676;--green2:#00c853;--green-dim:rgba(0,230,118,0.07);--green-glow:rgba(0,230,118,0.2);
+  --amber:#ffab00;--amber-dim:rgba(255,171,0,0.07);
+  --red:#ff5252;--red-dim:rgba(255,82,82,0.07);
+  --blue:#448aff;--blue-dim:rgba(68,138,255,0.07);
+  --gold:#ffd740;--gold-dim:rgba(255,215,64,0.08);
+  --purple:#e040fb;--purple-dim:rgba(224,64,251,0.08);
+  --r:10px;--r-sm:6px;--r-lg:14px;--r-xl:20px;
+  --font:'Syne',sans-serif;--mono:'JetBrains Mono',monospace;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.5;min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity:.4}
+
+/* ═══ LANDING / PAYWALL SCREEN ═══ */
+#paywallScreen{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;padding:calc(var(--safe-top) + 1.5rem) 1rem calc(var(--safe-bottom) + 4rem)}
+.pw-nav{width:100%;max-width:860px;display:flex;align-items:center;justify-content:space-between;margin-bottom:3rem}
+.pw-logo{display:flex;align-items:center;gap:10px}
+.pw-logo-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--green),#00bfa5);display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 0 28px var(--green-glow)}
+.pw-logo-text{font-size:20px;font-weight:800;letter-spacing:-0.03em}
+.pw-logo-text span{color:var(--green)}
+.pw-nav-signin{background:none;border:1px solid var(--border2);color:var(--text2);padding:7px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s}
+.pw-nav-signin:hover{border-color:var(--border3);color:var(--text)}
+
+.pw-hero{text-align:center;max-width:580px;margin-bottom:2.5rem}
+.pw-hero-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--green);margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:6px}
+.pw-hero-eyebrow::before,.pw-hero-eyebrow::after{content:'';flex:1;max-width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--green))}
+.pw-hero-eyebrow::after{background:linear-gradient(90deg,var(--green),transparent)}
+.pw-hero h1{font-size:clamp(2rem,5.5vw,3.4rem);font-weight:800;letter-spacing:-0.04em;line-height:1.08;margin-bottom:1.2rem}
+.pw-hero h1 .accent{color:var(--green)}
+.pw-hero p{font-size:16px;color:var(--text2);line-height:1.75;max-width:500px;margin:0 auto}
+.pw-stats{display:flex;gap:1.5rem;justify-content:center;margin-bottom:2.5rem;flex-wrap:wrap}
+.pw-stat{text-align:center;padding:10px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg)}
+.pw-stat-val{font-size:26px;font-weight:800;color:var(--green);letter-spacing:-0.03em;font-family:var(--mono)}
+.pw-stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+
+/* ═══ PLAN CARDS ═══ */
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;max-width:860px;width:100%;margin-bottom:1.5rem}
+.plan{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-lg);padding:22px;position:relative;transition:border-color .2s,transform .2s;cursor:pointer}
+.plan:hover{border-color:var(--border3);transform:translateY(-3px)}
+.plan.featured{border-color:var(--green);background:linear-gradient(160deg,rgba(0,230,118,0.06),var(--bg3))}
+.plan-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;padding:3px 12px;border-radius:99px;background:var(--green);color:#000;letter-spacing:.08em;white-space:nowrap}
+.plan-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:6px}
+.plan-price{font-size:34px;font-weight:800;letter-spacing:-0.04em;margin-bottom:3px}
+.plan-price span{font-size:14px;font-weight:400;color:var(--text2)}
+.plan-save{font-size:11px;font-weight:700;color:var(--green);background:var(--green-dim);padding:2px 8px;border-radius:99px;display:inline-block;margin-bottom:8px;border:1px solid rgba(0,230,118,.15)}
+.plan-desc{font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.6}
+.plan-features{list-style:none;margin-bottom:20px;display:flex;flex-direction:column;gap:7px}
+.plan-features li{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--text)}
+.plan-features li::before{content:'✓';color:var(--green);font-weight:700;font-size:11px;flex-shrink:0;margin-top:2px}
+.plan-features li.no::before{content:'✗';color:var(--text3)}
+.plan-features li.no{color:var(--text3)}
+.btn-plan{width:100%;padding:11px;border-radius:var(--r-sm);font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .15s;font-family:var(--font);letter-spacing:.02em}
+.btn-plan.featured{background:var(--green);color:#000}
+.btn-plan.featured:hover{background:#00ff88;box-shadow:0 0 20px var(--green-glow)}
+.btn-plan.basic{background:var(--bg5);color:var(--text);border:1px solid var(--border2)}
+.btn-plan.basic:hover{border-color:var(--border3)}
+.btn-plan:active{transform:scale(.97)}
+
+.pw-signin-row{font-size:12px;color:var(--text3);text-align:center;margin-bottom:10px}
+.pw-signin-row a{color:var(--text2);cursor:pointer;text-decoration:underline}
+
+/* ═══ DEV ACCESS ═══ */
+.dev-section{max-width:400px;width:100%;margin-top:.5rem}
+.dev-toggle{background:none;border:1px solid var(--border2);color:var(--text3);padding:8px 16px;border-radius:var(--r-sm);font-size:12px;cursor:pointer;font-family:var(--font);transition:all .15s;width:100%}
+.dev-toggle:hover{border-color:var(--border3);color:var(--text2)}
+.dev-form{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-lg);padding:18px;margin-top:8px;display:none}
+.dev-form.open{display:block}
+.dev-form h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:3px}
+.dev-form p{font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5}
+.dev-input-row{display:flex;gap:8px}
+.dev-input{flex:1;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text);padding:9px 12px;font-size:13px;font-family:var(--mono);outline:none;transition:border-color .15s;letter-spacing:.05em}
+.dev-input:focus{border-color:var(--green)}
+.btn-dev{padding:9px 14px;border-radius:var(--r-sm);background:var(--bg5);color:var(--text2);border:1px solid var(--border2);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s;white-space:nowrap}
+.btn-dev:hover{border-color:var(--green);color:var(--green)}
+.dev-error{font-size:12px;color:var(--red);margin-top:8px;display:none}
+.dev-success{font-size:12px;color:var(--green);margin-top:8px;display:none}
+
+/* ═══ MODALS ═══ */
+.modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(6,6,8,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:none;align-items:flex-end;justify-content:center;padding:0}
+.modal-overlay.open{display:flex}
+@media(min-width:640px){
+  .modal-overlay{align-items:center;padding:1rem}
+}
+.modal{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-xl) var(--r-xl) 0 0;padding:28px 24px calc(var(--safe-bottom) + 28px);width:100%;max-width:420px;position:relative;animation:slideUp .25s ease}
+@media(min-width:640px){
+  .modal{border-radius:var(--r-xl);padding:32px}
+}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-handle{width:36px;height:4px;background:var(--bg6);border-radius:99px;margin:0 auto 20px;display:block}
+@media(min-width:640px){.modal-handle{display:none}}
+.modal-close{position:absolute;top:16px;right:16px;background:var(--bg5);border:none;color:var(--text3);cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s}
+.modal-close:hover{background:var(--bg6);color:var(--text)}
+.modal h2{font-size:22px;font-weight:800;margin-bottom:4px;letter-spacing:-.03em}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:22px;line-height:1.5}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.form-group label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+.form-input{background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text);padding:12px 14px;font-size:15px;outline:none;transition:border-color .15s;font-family:inherit;width:100%;-webkit-appearance:none}
+.form-input:focus{border-color:var(--green)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-primary{width:100%;padding:13px;border-radius:var(--r-sm);background:var(--green);color:#000;font-size:15px;font-weight:700;cursor:pointer;border:none;font-family:var(--font);transition:all .15s;margin-top:6px}
+.btn-primary:hover{background:#00ff88;box-shadow:0 0 20px var(--green-glow)}
+.btn-primary:active{transform:scale(.97)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-secondary{width:100%;padding:11px;border-radius:var(--r-sm);background:var(--bg5);color:var(--text);border:1px solid var(--border2);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s;margin-top:6px}
+.btn-secondary:hover{border-color:var(--border3)}
+.modal-footer{text-align:center;font-size:12px;color:var(--text3);margin-top:14px}
+.modal-footer a{color:var(--text2);cursor:pointer;text-decoration:underline}
+.modal-err{background:var(--red-dim);border:1px solid rgba(255,82,82,.2);border-radius:var(--r-sm);padding:8px 12px;font-size:12px;color:var(--red);margin-bottom:12px;display:none}
+.modal-ok{background:var(--green-dim);border:1px solid rgba(0,230,118,.2);border-radius:var(--r-sm);padding:8px 12px;font-size:12px;color:var(--green);margin-bottom:12px;display:none}
+.modal-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--text3);font-size:12px}
+.modal-divider::before,.modal-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.pw-tabs{display:flex;gap:0;margin-bottom:20px;background:var(--bg4);border-radius:var(--r-sm);padding:3px}
+.pw-tab{flex:1;padding:8px;border-radius:5px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--text3);font-family:var(--font);transition:all .15s}
+.pw-tab.active{background:var(--bg3);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.3)}
+
+/* ═══ PAYMENT MODAL ═══ */
+.pay-plan-summary{background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pay-plan-info{}
+.pay-plan-name{font-size:14px;font-weight:700}
+.pay-plan-desc{font-size:12px;color:var(--text2);margin-top:1px}
+.pay-plan-price{font-size:22px;font-weight:800;font-family:var(--mono);color:var(--green);white-space:nowrap;letter-spacing:-0.03em}
+.pay-plan-period{font-size:11px;color:var(--text3);display:block;text-align:right}
+.pay-card-field{position:relative}
+.pay-card-icon{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none}
+.pay-security{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);justify-content:center;margin-top:12px}
+.pay-security::before{content:'🔒'}
+.pay-terms{font-size:11px;color:var(--text3);text-align:center;margin-top:10px;line-height:1.6}
+.pay-terms a{color:var(--text2);text-decoration:underline;cursor:pointer}
+.trial-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--green);background:var(--green-dim);border:1px solid rgba(0,230,118,.2);border-radius:99px;padding:4px 12px;margin-bottom:16px}
+.pay-guarantee{background:var(--gold-dim);border:1px solid rgba(255,215,64,.2);border-radius:var(--r-sm);padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--gold);display:flex;align-items:center;gap:8px}
+
+/* ═══ SUCCESS SCREEN ═══ */
+#successScreen{position:fixed;inset:0;z-index:3000;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center}
+.success-icon{width:80px;height:80px;border-radius:50%;background:var(--green-dim);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 1.5rem;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.success-icon.pulse{animation:popIn .4s cubic-bezier(.34,1.56,.64,1),ringPulse 1.5s .5s infinite}
+@keyframes ringPulse{0%,100%{box-shadow:0 0 0 0 var(--green-glow)}50%{box-shadow:0 0 0 20px transparent}}
+.success-title{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-bottom:.5rem}
+.success-sub{font-size:15px;color:var(--text2);margin-bottom:2rem;line-height:1.6}
+.success-details{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-lg);padding:16px 20px;text-align:left;max-width:340px;width:100%;margin-bottom:1.5rem}
+.success-detail-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)}
+.success-detail-row:last-child{border-bottom:none}
+.success-detail-key{color:var(--text3)}
+.success-detail-val{font-weight:600}
+
+/* ═══ MAIN APP ═══ */
+#appScreen{display:none;min-height:100vh}
+.app-nav{background:rgba(6,6,8,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 1.25rem;padding-top:var(--safe-top);height:calc(56px + var(--safe-top));display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:8px;margin-right:auto}
+.nav-logo-mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--green),#00bfa5);display:flex;align-items:center;justify-content:center;font-size:12px}
+.nav-logo-text{font-size:15px;font-weight:800;letter-spacing:-.02em}
+.nav-logo-text span{color:var(--green)}
+.nav-tier{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;letter-spacing:.07em}
+.nav-tier.pro{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(255,215,64,.2)}
+.nav-tier.basic{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(68,138,255,.2)}
+.nav-tier.dev{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(224,64,251,.2)}
+.nav-user{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px}
+.nav-avatar{width:26px;height:26px;border-radius:50%;background:var(--bg5);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--green)}
+.btn-logout{background:none;border:1px solid var(--border2);color:var(--text3);padding:5px 10px;border-radius:var(--r-sm);font-size:11px;cursor:pointer;font-family:var(--font);transition:all .15s;white-space:nowrap}
+.btn-logout:hover{border-color:var(--red);color:var(--red)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:1.25rem 1rem calc(var(--safe-bottom) + 3rem);position:relative;z-index:1}
+
+/* ═══ CONFIG BAR ═══ */
+.config{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.config-group{display:flex;flex-direction:column;gap:4px}
+.config-group label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+input[type="text"],input[type="number"],input[type="email"],input[type="password"],select{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text);padding:8px 10px;font-size:13px;outline:none;transition:border-color .15s;font-family:inherit;-webkit-appearance:none;appearance:none}
+input[type="text"]:focus,input[type="number"]:focus,input[type="email"]:focus,input[type="password"]:focus,select:focus{border-color:var(--green)}
+select option{background:var(--bg3)}
+#apiKey{width:240px;font-family:var(--mono);font-size:11px}
+#bankroll{width:90px}
+#pollInterval{width:65px}
+#filterMode{width:125px}
+#minProfit{width:76px}
+.btn{padding:9px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .15s;white-space:nowrap;font-family:var(--font);-webkit-appearance:none}
+.btn:active{transform:scale(.97)}
+.btn-green{background:var(--green);color:#000}
+.btn-green:hover{background:#00ff88;box-shadow:0 0 16px var(--green-glow)}
+.btn-green:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-stop{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,82,82,.25)}
+.btn-stop:hover{opacity:.8}
+.next-scan{font-size:11px;color:var(--text3);white-space:nowrap;align-self:flex-end;padding-bottom:2px;font-family:var(--mono)}
+
+.pro-lock{position:relative}
+.pro-lock-badge{position:absolute;top:-6px;right:-6px;font-size:9px;font-weight:700;padding:1px 5px;border-radius:99px;background:var(--gold-dim);color:var(--gold);border:1px solid rgba(255,215,64,.3);pointer-events:none}
+
+/* ═══ ERR ═══ */
+.err{background:var(--red-dim);border:1px solid rgba(255,82,82,.2);border-radius:var(--r-sm);padding:10px 14px;font-size:13px;color:var(--red);margin-bottom:12px;display:none}
+
+/* ═══ STATS ═══ */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:7px;margin-bottom:12px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 14px;position:relative;overflow:hidden}
+.stat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:transparent;transition:background .3s}
+.stat.has-data.green::after{background:var(--green)}
+.stat.has-data.amber::after{background:var(--amber)}
+.stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;font-weight:600}
+.stat-val{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat-val.green{color:var(--green)}
+.stat-val.amber{color:var(--amber)}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:1px;font-family:var(--mono)}
+
+/* ═══ STATUS ROW ═══ */
+.status-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:12px;color:var(--text2)}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .3s}
+.sdot.scanning{background:var(--amber);animation:pulse .8s infinite}
+.sdot.live{background:var(--green);animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ═══ SECTION HEADER ═══ */
+.section-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.section-head h2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)}
+.count-pill{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--green-dim);color:var(--green);border:1px solid rgba(0,230,118,.15)}
+
+/* ═══ LIVE BADGE ═══ */
+.live-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--green-dim);color:var(--green);border:1px solid rgba(0,230,118,.25);display:none;align-items:center;gap:5px}
+.live-badge .dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.4s infinite}
+
+/* ═══ CARDS ═══ */
+.feed{display:flex;flex-direction:column;gap:9px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.card.arb{border-color:rgba(0,230,118,.4);box-shadow:0 0 24px rgba(0,230,118,.06)}
+.card.arb:hover{border-color:var(--green);box-shadow:0 0 32px rgba(0,230,118,.1)}
+.card.stale{border-color:rgba(255,171,0,.3)}
+.card-head{display:flex;align-items:center;gap:7px;padding:10px 12px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.sport-pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--bg5);color:var(--text3);white-space:nowrap;letter-spacing:.07em;text-transform:uppercase}
+.match-name{font-size:13px;font-weight:700;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-.01em}
+.profit-pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap;font-family:var(--mono)}
+.profit-pill.arb{background:var(--green-dim);color:var(--green);border:1px solid rgba(0,230,118,.2)}
+.profit-pill.no-arb{background:var(--bg3);color:var(--text3);border:1px solid var(--border)}
+.profit-dollar{font-size:11px;font-weight:700;color:var(--green);white-space:nowrap;font-family:var(--mono)}
+.commence{font-size:10px;color:var(--text3);white-space:nowrap}
+.outcomes{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}
+.outcome{padding:11px 12px;border-right:1px solid var(--border);position:relative}
+.outcome:last-child{border-right:none}
+.out-book{font-size:10px;color:var(--text3);margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.out-label{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.out-odds{font-size:24px;font-weight:800;color:var(--text);letter-spacing:-.04em;font-family:var(--mono)}
+.out-odds.best{color:var(--green)}
+.out-stake{font-size:11px;color:var(--text3);margin-top:2px;font-family:var(--mono)}
+.out-updated{font-size:10px;margin-top:3px}
+.out-updated.fresh{color:var(--green)}
+.out-updated.ok{color:var(--text3)}
+.out-updated.stale{color:var(--amber)}
+.out-updated.very-stale{color:var(--red)}
+
+/* BLURRED ODDS for basic plan */
+.blurred .out-odds,.blurred .out-stake{filter:blur(5px);user-select:none;pointer-events:none}
+.blur-cta{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;z-index:2}
+.blur-cta span{font-size:11px;color:var(--gold);font-weight:600}
+.blur-cta button{font-size:10px;padding:4px 10px;border-radius:99px;background:var(--gold-dim);color:var(--gold);border:1px solid rgba(255,215,64,.3);cursor:pointer;font-family:var(--font)}
+
+.card-mid{padding:9px 12px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.countdown-wrap{display:flex;align-items:center;gap:7px;flex:1}
+.countdown-label{font-size:11px;color:var(--text3);white-space:nowrap}
+.progress-bar{flex:1;height:3px;background:var(--bg5);border-radius:99px;overflow:hidden;min-width:50px}
+.progress-fill{height:100%;border-radius:99px;transition:width 1s linear,background 1s}
+.countdown-time{font-size:12px;font-weight:700;min-width:50px;text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+.countdown-time.urgent{color:var(--red)}
+.countdown-time.warning{color:var(--amber)}
+.countdown-time.ok{color:var(--green)}
+.stale-warn{font-size:11px;color:var(--amber);background:var(--amber-dim);border-radius:var(--r-sm);padding:2px 7px;white-space:nowrap;border:1px solid rgba(255,171,0,.15)}
+.card-foot{padding:8px 12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.foot-note{font-size:11px;color:var(--text3);flex:1;min-width:80px}
+.book-links{display:flex;gap:4px;flex-wrap:wrap}
+.book-link{font-size:11px;padding:3px 7px;border-radius:var(--r-sm);background:var(--bg3);color:var(--text2);border:1px solid var(--border2);text-decoration:none;transition:all .15s}
+.book-link:hover{border-color:var(--green);color:var(--green)}
+.implied{font-size:11px;color:var(--text3);margin-left:auto;white-space:nowrap;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+.empty{text-align:center;padding:5rem 1rem;color:var(--text3);font-size:14px;line-height:2}
+
+/* ═══ UPGRADE BANNER ═══ */
+.upgrade-banner{background:linear-gradient(135deg,rgba(255,215,64,.08),rgba(0,230,118,.06));border:1px solid rgba(255,215,64,.2);border-radius:var(--r-lg);padding:14px 18px;margin-bottom:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.upgrade-banner-text{flex:1;min-width:160px}
+.upgrade-banner-text h3{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:1px}
+.upgrade-banner-text p{font-size:12px;color:var(--text3)}
+.btn-upgrade{padding:8px 16px;border-radius:var(--r-sm);background:var(--gold);color:#000;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:var(--font);transition:all .15s;white-space:nowrap}
+.btn-upgrade:hover{background:#ffe000;box-shadow:0 0 20px rgba(255,215,64,.3)}
+
+/* ═══ SPORT TABS ═══ */
+.sport-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+.sport-tab{padding:5px 11px;border-radius:99px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text3);transition:all .15s;font-family:var(--font);letter-spacing:.02em}
+.sport-tab:hover{border-color:var(--border3);color:var(--text2)}
+.sport-tab.active{background:var(--green-dim);color:var(--green);border-color:rgba(0,230,118,.3)}
+.sport-tab .tab-count{font-family:var(--mono);font-size:10px;opacity:.7;margin-left:2px}
+
+/* ═══ ALERT NOTIFICATION ═══ */
+.alert-toast{position:fixed;bottom:calc(var(--safe-bottom) + 24px);right:16px;z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-lg);padding:12px 16px;max-width:300px;box-shadow:0 8px 40px rgba(0,0,0,.6);transform:translateY(120%);transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.alert-toast.show{transform:translateY(0)}
+.alert-toast.arb{border-color:rgba(0,230,118,.4);background:linear-gradient(135deg,rgba(0,230,118,.06),var(--bg3))}
+.toast-title{font-size:13px;font-weight:700;color:var(--green);margin-bottom:3px}
+.toast-body{font-size:12px;color:var(--text2)}
+
+/* ═══ SCROLLBAR ═══ */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--bg4)}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:640px){
+  .pw-hero h1{font-size:1.9rem}
+  .plans{grid-template-columns:1fr}
+  #apiKey{width:100%;min-width:0}
+  .config{flex-direction:column;align-items:stretch}
+  .config-group{width:100%}
+  .config-group input,.config-group select{width:100%}
+  #bankroll,#pollInterval,#filterMode,#minProfit{width:100%}
+  .outcomes{grid-template-columns:1fr 1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .config-btns{display:flex;gap:8px;width:100%}
+  .config-btns .btn{flex:1}
+  .alert-toast{right:12px;left:12px;max-width:none}
+  .nav-user .nav-username{display:none}
+}
+@media(max-width:380px){
+  .outcomes{grid-template-columns:1fr}
+  .outcome{border-right:none;border-bottom:1px solid var(--border)}
+  .outcome:last-child{border-bottom:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ PAYWALL / LANDING ══════════════════ -->
+<div id="paywallScreen">
+  <div class="pw-nav">
+    <div class="pw-logo">
+      <div class="pw-logo-mark">⚡</div>
+      <div class="pw-logo-text">Arb<span>Edge</span> Pro</div>
+    </div>
+    <button class="pw-nav-signin" onclick="openModal('loginModal')">Sign in</button>
+  </div>
+
+  <div class="pw-hero">
+    <div class="pw-hero-eyebrow">🇦🇺 Australian Arbitrage Scanner</div>
+    <h1>Find <span class="accent">guaranteed profit</span><br>on every sport, every day</h1>
+    <p>Real-time arbitrage detection across 15+ AU bookmakers and 18 sports. Millisecond-precise stake calculations. Never miss a window again.</p>
+  </div>
+
+  <div class="pw-stats">
+    <div class="pw-stat"><div class="pw-stat-val">15+</div><div class="pw-stat-lbl">Bookmakers</div></div>
+    <div class="pw-stat"><div class="pw-stat-val">18</div><div class="pw-stat-lbl">Sports</div></div>
+    <div class="pw-stat"><div class="pw-stat-val">30s</div><div class="pw-stat-lbl">Scan interval</div></div>
+    <div class="pw-stat"><div class="pw-stat-val">100%</div><div class="pw-stat-lbl">Guaranteed</div></div>
+  </div>
+
+  <div class="plans">
+    <!-- BASIC -->
+    <div class="plan">
+      <div class="plan-name">Starter</div>
+      <div class="plan-price">$29<span>/month</span></div>
+      <div class="plan-desc">Perfect for beginners. Scan 5 AU sports with live odds comparison.</div>
+      <ul class="plan-features">
+        <li>5 AU sports monitored</li>
+        <li>Top 3 arb results shown</li>
+        <li>10 bookmakers</li>
+        <li>30s scan intervals</li>
+        <li>Stake calculator</li>
+        <li class="no">Full odds revealed</li>
+        <li class="no">Real-time alerts</li>
+        <li class="no">All 18 sports</li>
+        <li class="no">Priority 10s scan</li>
+      </ul>
+      <button class="btn-plan basic" onclick="startCheckout('basic')">Get Started</button>
+    </div>
+    
+    <!-- PRO — FEATURED -->
+    <div class="plan featured">
+      <div class="plan-badge">MOST POPULAR</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price">$79<span>/month</span></div>
+      <div class="plan-desc">Full access to every arb opportunity across all 18 sports.</div>
+      <ul class="plan-features">
+        <li>All 18 sports monitored</li>
+        <li>Unlimited arb results</li>
+        <li>15+ bookmakers</li>
+        <li>10s priority scan intervals</li>
+        <li>Advanced stake calculator</li>
+        <li>Full odds revealed</li>
+        <li>Real-time profit alerts</li>
+        <li>Minimum profit filter</li>
+        <li>Direct bookie links</li>
+      </ul>
+      <button class="btn-plan featured" onclick="startCheckout('pro')">Unlock Pro Access</button>
+    </div>
+
+    <!-- ANNUAL -->
+    <div class="plan">
+      <div class="plan-name">Annual Pro</div>
+      <div class="plan-price">$599<span>/year</span></div>
+      <div class="plan-save">Save $349 — 2 months free</div>
+      <div class="plan-desc">Best value for serious arbitrage traders.</div>
+      <ul class="plan-features">
+        <li>Everything in Pro</li>
+        <li>2 months free ($158 saved)</li>
+        <li>Early access to new features</li>
+        <li>Priority support</li>
+        <li>API access (coming soon)</li>
+        <li>Custom alert thresholds</li>
+        <li>Export to CSV/JSON</li>
+      </ul>
+      <button class="btn-plan basic" onclick="startCheckout('annual')">Best Value</button>
+    </div>
+  </div>
+
+  <div class="pw-signin-row">
+    Already have an account? <a onclick="openModal('loginModal')">Sign in here</a>
+  </div>
+
+  <!-- DEVELOPER ACCESS -->
+  <div class="dev-section">
+    <button class="dev-toggle" onclick="toggleDevForm()">🔧 Developer / Partner Access</button>
+    <div class="dev-form" id="devForm">
+      <h3>Developer Portal</h3>
+      <p>Enter your Empower passcode to unlock full ArbEdge Pro access.</p>
+      <div class="dev-input-row">
+        <input type="password" class="dev-input" id="devPasscode" placeholder="Enter passcode…" />
+        <button class="btn-dev" onclick="checkDevPasscode()">Unlock</button>
+      </div>
+      <div class="dev-error" id="devError">❌ Invalid passcode. Please try again.</div>
+      <div class="dev-success" id="devSuccess">✓ Access granted. Loading your workspace…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ LOGIN MODAL ══════════════════ -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+
+    <div class="pw-tabs">
+      <button class="pw-tab active" id="tabLogin" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="pw-tab" id="tabRegister" onclick="switchAuthTab('register')">Create Account</button>
+    </div>
+
+    <!-- LOGIN PANEL -->
+    <div id="panelLogin">
+      <h2>Welcome back</h2>
+      <div class="modal-sub">Sign in to your ArbEdge account</div>
+      <div class="modal-err" id="loginErr">Invalid email or password. Please try again.</div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" class="form-input" id="loginEmail" placeholder="you@email.com" autocomplete="email" autocapitalize="none"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" class="form-input" id="loginPass" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Sign In</button>
+      <div class="modal-footer">
+        <a onclick="openForgotPassword()">Forgot password?</a> &nbsp;·&nbsp;
+        No account? <a onclick="switchAuthTab('register')">Create one free</a>
+      </div>
+    </div>
+
+    <!-- REGISTER PANEL -->
+    <div id="panelRegister" style="display:none">
+      <h2>Create account</h2>
+      <div class="modal-sub">Join ArbEdge Pro — start finding arbs in minutes</div>
+      <div class="modal-err" id="registerErr"></div>
+      <div class="modal-ok" id="registerOk"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" class="form-input" id="regFirst" placeholder="Alex" autocomplete="given-name"/>
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" class="form-input" id="regLast" placeholder="Smith" autocomplete="family-name"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" class="form-input" id="regEmail" placeholder="you@email.com" autocomplete="email" autocapitalize="none"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" class="form-input" id="regPass" placeholder="Min 8 characters" autocomplete="new-password"/>
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" class="form-input" id="regPassConfirm" placeholder="••••••••" autocomplete="new-password"/>
+      </div>
+      <button class="btn-primary" onclick="doRegister()">Create Account & Choose Plan</button>
+      <div class="modal-footer">
+        Already have an account? <a onclick="switchAuthTab('login')">Sign in</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAYMENT MODAL ══════════════════ -->
+<div class="modal-overlay" id="paymentModal">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <button class="modal-close" onclick="closeModal('paymentModal')">✕</button>
+
+    <div id="payStep1">
+      <h2>Complete your order</h2>
+      <div class="modal-sub">Secure checkout — cancel anytime</div>
+
+      <div class="trial-badge">🎉 7-day free trial included</div>
+
+      <div class="pay-plan-summary" id="paySummary">
+        <div class="pay-plan-info">
+          <div class="pay-plan-name" id="payPlanName">Pro Plan</div>
+          <div class="pay-plan-desc" id="payPlanDesc">All 18 sports · 15+ bookmakers</div>
+        </div>
+        <div>
+          <div class="pay-plan-price" id="payPlanPrice">$79</div>
+          <span class="pay-plan-period" id="payPlanPeriod">/month</span>
+        </div>
+      </div>
+
+      <div class="pay-guarantee">🛡️ 7-day money-back guarantee. No questions asked.</div>
+
+      <div class="modal-err" id="payErr"></div>
+
+      <div class="form-group">
+        <label>Card Number</label>
+        <div class="pay-card-field">
+          <input type="text" class="form-input" id="cardNum" placeholder="1234 5678 9012 3456" maxlength="19" autocomplete="cc-number" inputmode="numeric" style="width:100%;padding-right:44px"/>
+          <span class="pay-card-icon" id="cardIcon">💳</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Expiry</label>
+          <input type="text" class="form-input" id="cardExp" placeholder="MM/YY" maxlength="5" autocomplete="cc-exp" inputmode="numeric"/>
+        </div>
+        <div class="form-group">
+          <label>CVC</label>
+          <input type="text" class="form-input" id="cardCvc" placeholder="123" maxlength="4" autocomplete="cc-csc" inputmode="numeric"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Name on Card</label>
+        <input type="text" class="form-input" id="cardName" placeholder="Alex Smith" autocomplete="cc-name"/>
+      </div>
+
+      <button class="btn-primary" id="payBtn" onclick="processPayment()">Start Free Trial →</button>
+      <div class="pay-security">256-bit SSL encryption · Powered by Stripe</div>
+      <div class="pay-terms">By subscribing you agree to our <a>Terms of Service</a> and <a>Privacy Policy</a>.<br>You will be billed after your 7-day free trial.</div>
+    </div>
+
+    <div id="payStep2" style="display:none">
+      <div style="text-align:center;padding:1rem 0">
+        <div style="font-size:40px;margin-bottom:12px;animation:spin 1s linear infinite">⟳</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px">Processing payment…</div>
+        <div style="font-size:13px;color:var(--text3)">Please wait, do not close this window</div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style>
+
+<!-- ══════════════════ FORGOT PASSWORD MODAL ══════════════════ -->
+<div class="modal-overlay" id="forgotModal">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <button class="modal-close" onclick="closeModal('forgotModal')">✕</button>
+    <h2>Reset password</h2>
+    <div class="modal-sub">Enter your email and we'll send a reset link</div>
+    <div class="modal-err" id="forgotErr"></div>
+    <div class="modal-ok" id="forgotOk"></div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" class="form-input" id="forgotEmail" placeholder="you@email.com" autocapitalize="none"/>
+    </div>
+    <button class="btn-primary" onclick="doForgotPassword()">Send Reset Link</button>
+    <button class="btn-secondary" onclick="closeModal('forgotModal');openModal('loginModal')">Back to Sign In</button>
+  </div>
+</div>
+
+<!-- ══════════════════ SUCCESS SCREEN ══════════════════ -->
+<div id="successScreen">
+  <div class="success-icon pulse">✓</div>
+  <div class="success-title">You're all set! 🎉</div>
+  <div class="success-sub">Your free trial has started.<br>Welcome to ArbEdge Pro.</div>
+  <div class="success-details">
+    <div class="success-detail-row">
+      <span class="success-detail-key">Plan</span>
+      <span class="success-detail-val" id="successPlan">Pro Monthly</span>
+    </div>
+    <div class="success-detail-row">
+      <span class="success-detail-key">Trial ends</span>
+      <span class="success-detail-val" id="successTrialEnd">—</span>
+    </div>
+    <div class="success-detail-row">
+      <span class="success-detail-key">Account</span>
+      <span class="success-detail-val" id="successEmail">—</span>
+    </div>
+  </div>
+  <button class="btn-primary" style="max-width:300px;font-size:15px" onclick="launchApp()">Open ArbEdge Pro →</button>
+</div>
+
+<!-- ══════════════════ APP SCREEN ══════════════════ -->
+<div id="appScreen">
+  <nav class="app-nav">
+    <div class="nav-logo">
+      <div class="nav-logo-mark">⚡</div>
+      <div class="nav-logo-text">Arb<span>Edge</span> Pro</div>
+    </div>
+    <span class="nav-tier" id="navTierBadge">PRO</span>
+    <span class="live-badge" id="liveBadge"><span class="dot"></span>LIVE</span>
+    <div class="nav-user">
+      <div class="nav-avatar" id="navAvatar">?</div>
+      <span class="nav-username" id="navUserName"></span>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">Sign out</button>
+  </nav>
+
+  <div class="wrap">
+    <!-- UPGRADE BANNER (basic only) -->
+    <div class="upgrade-banner" id="upgradeBanner" style="display:none">
+      <div class="upgrade-banner-text">
+        <h3>🔒 You're on the Starter plan</h3>
+        <p>Upgrade to Pro to unlock full odds, all 18 sports, priority scans and real-time alerts.</p>
+      </div>
+      <button class="btn-upgrade" onclick="showPaywall()">Upgrade to Pro →</button>
+    </div>
+
+    <!-- CONFIG BAR -->
+    <div class="config">
+      <div class="config-group">
+        <label>Odds API Key</label>
+        <input type="text" id="apiKey" placeholder="Paste key from the-odds-api.com…"/>
+      </div>
+      <div class="config-group">
+        <label>Bankroll $</label>
+        <input type="number" id="bankroll" value="1000" min="10" max="500000"/>
+      </div>
+      <div class="config-group">
+        <label>Poll every (s)</label>
+        <input type="number" id="pollInterval" value="30" min="10" max="300"/>
+      </div>
+      <div class="config-group">
+        <label>Show</label>
+        <select id="filterMode">
+          <option value="all">All markets</option>
+          <option value="arb">Arb only</option>
+        </select>
+      </div>
+      <div class="config-group pro-lock" id="minProfitGroup">
+        <label>Min profit %</label>
+        <input type="number" id="minProfit" value="0" min="0" max="10" step="0.1"/>
+        <span class="pro-lock-badge" id="minProfitLock">PRO</span>
+      </div>
+      <div class="config-btns" style="display:flex;gap:8px;align-self:flex-end">
+        <button class="btn btn-green" id="scanBtn" onclick="startScan()">▶ Start</button>
+        <button class="btn btn-stop" id="stopBtn" onclick="stopScan()" style="display:none">■ Stop</button>
+      </div>
+      <span class="next-scan" id="nextScan"></span>
+    </div>
+
+    <div class="err" id="errBox"></div>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat" id="statTotal"><div class="stat-lbl">Markets</div><div class="stat-val" id="sTotal">—</div></div>
+      <div class="stat green" id="statArbs"><div class="stat-lbl">Arbs found</div><div class="stat-val green" id="sArbs">—</div><div class="stat-sub" id="sArbsSub"></div></div>
+      <div class="stat green" id="statBest"><div class="stat-lbl">Best profit %</div><div class="stat-val green" id="sBest">—</div></div>
+      <div class="stat green" id="statBestDollar"><div class="stat-lbl">Best profit $</div><div class="stat-val green" id="sBestDollar">—</div></div>
+      <div class="stat amber" id="statQuota"><div class="stat-lbl">API requests left</div><div class="stat-val amber" id="sQuota">—</div></div>
+      <div class="stat" id="statSports"><div class="stat-lbl">Sports scanned</div><div class="stat-val" id="sSports">—</div></div>
+    </div>
+
+    <!-- STATUS -->
+    <div class="status-row">
+      <span class="sdot" id="sdot"></span>
+      <span id="statusText">Enter your API key and press Start</span>
+    </div>
+
+    <!-- SPORT TABS -->
+    <div class="sport-tabs" id="sportTabs"></div>
+
+    <!-- FEED -->
+    <div class="section-head">
+      <h2>Live Opportunities</h2>
+      <span class="count-pill" id="feedCount" style="display:none">0</span>
+    </div>
+    <div class="feed" id="feed"></div>
+  </div>
+</div>
+
+<!-- ALERT TOAST -->
+<div class="alert-toast" id="alertToast">
+  <div class="toast-title" id="toastTitle"></div>
+  <div class="toast-body" id="toastBody"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// ACCOUNT STORE (localStorage simulation — in production use a real backend)
+// ═══════════════════════════════════════════
+const ACCOUNTS_KEY = 'arbedge_accounts';
+const SESSION_KEY  = 'arbedge_session';
+
+function getAccounts(){
+  try{ return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)||'{}'); }
+  catch(e){ return {}; }
+}
+function saveAccounts(obj){ localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(obj)); }
+function getSession(){
+  try{ return JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); }
+  catch(e){ return null; }
+}
+function saveSession(obj){ localStorage.setItem(SESSION_KEY, JSON.stringify(obj)); }
+function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+
+// Built-in demo accounts
+const DEMO_ACCOUNTS = {
+  "pro@demo.com":   { pass:"pro123",   tier:"pro",   name:"Pro Demo" },
+  "basic@demo.com": { pass:"basic123", tier:"basic", name:"Starter Demo" },
+};
+const DEV_PASSCODES = ["Empower","EMPOWER","empower","empower123","Empower123"];
+
+let currentUser = null;
+let checkoutPlan = null;
+let pendingRegistration = null;
+
+// ═══════════════════════════════════════════
+// MODAL SYSTEM
+// ═══════════════════════════════════════════
+function openModal(id){
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('open');
+  // Only restore scroll if no other modals open
+  if(!document.querySelector('.modal-overlay.open')) document.body.style.overflow='';
+}
+// Close modal on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click', e=>{ if(e.target===el) closeModal(el.id); });
+});
+
+function switchAuthTab(tab){
+  const isLogin = tab==='login';
+  document.getElementById('tabLogin').classList.toggle('active', isLogin);
+  document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+  document.getElementById('panelLogin').style.display = isLogin ? '' : 'none';
+  document.getElementById('panelRegister').style.display = isLogin ? 'none' : '';
+  clearEls('loginErr','registerErr','registerOk');
+}
+
+function clearEls(...ids){ ids.forEach(id=>{ const el=document.getElementById(id); if(el){el.style.display='none';el.textContent='';} }); }
+
+// ═══════════════════════════════════════════
+// AUTH — LOGIN
+// ═══════════════════════════════════════════
+function doLogin(){
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('loginPass').value;
+  const err   = document.getElementById('loginErr');
+  err.style.display='none';
+
+  // Check demo accounts first
+  const demo = DEMO_ACCOUNTS[email];
+  if(demo && demo.pass===pass){
+    currentUser = { email, name:demo.name, tier:demo.tier };
+    saveSession(currentUser);
+    closeModal('loginModal');
+    launchApp();
+    return;
+  }
+
+  // Check registered accounts
+  const accounts = getAccounts();
+  const acct = accounts[email];
+  if(!acct || acct.pass!==pass){
+    err.textContent = 'Invalid email or password. Please try again.';
+    err.style.display='block';
+    return;
+  }
+  currentUser = { email, name:acct.name, tier:acct.tier };
+  saveSession(currentUser);
+  closeModal('loginModal');
+  launchApp();
+}
+
+// ═══════════════════════════════════════════
+// AUTH — REGISTER
+// ═══════════════════════════════════════════
+function doRegister(){
+  const first  = document.getElementById('regFirst').value.trim();
+  const last   = document.getElementById('regLast').value.trim();
+  const email  = document.getElementById('regEmail').value.trim().toLowerCase();
+  const pass   = document.getElementById('regPass').value;
+  const passC  = document.getElementById('regPassConfirm').value;
+  const err    = document.getElementById('registerErr');
+  const ok     = document.getElementById('registerOk');
+  err.style.display='none'; ok.style.display='none';
+
+  if(!first||!last){ err.textContent='Please enter your full name.'; err.style.display='block'; return; }
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ err.textContent='Please enter a valid email address.'; err.style.display='block'; return; }
+  if(pass.length<8){ err.textContent='Password must be at least 8 characters.'; err.style.display='block'; return; }
+  if(pass!==passC){ err.textContent='Passwords do not match.'; err.style.display='block'; return; }
+
+  const accounts = getAccounts();
+  if(accounts[email] || DEMO_ACCOUNTS[email]){ err.textContent='An account with this email already exists.'; err.style.display='block'; return; }
+
+  // Store registration — will assign tier after payment
+  pendingRegistration = { email, pass, name: first+' '+last };
+
+  // Close login modal and open payment
+  closeModal('loginModal');
+  // Show plan selection if no plan chosen yet
+  if(!checkoutPlan) checkoutPlan = 'pro'; // default
+  showPaymentModal(checkoutPlan);
+}
+
+// ═══════════════════════════════════════════
+// FORGOT PASSWORD
+// ═══════════════════════════════════════════
+function openForgotPassword(){
+  closeModal('loginModal');
+  clearEls('forgotErr','forgotOk');
+  document.getElementById('forgotEmail').value='';
+  openModal('forgotModal');
+}
+function doForgotPassword(){
+  const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+  const err = document.getElementById('forgotErr');
+  const ok  = document.getElementById('forgotOk');
+  err.style.display='none'; ok.style.display='none';
+  if(!email){ err.textContent='Please enter your email.'; err.style.display='block'; return; }
+  // Simulate sending email
+  ok.textContent='Reset link sent! Check your inbox (demo: link would be emailed).';
+  ok.style.display='block';
+}
+
+// ═══════════════════════════════════════════
+// CHECKOUT FLOW
+// ═══════════════════════════════════════════
+const PLAN_INFO = {
+  basic:  { name:'Starter Monthly', desc:'5 AU sports · 10 bookmakers', price:'$29', period:'/month', tier:'basic' },
+  pro:    { name:'Pro Monthly',     desc:'All 18 sports · 15+ bookmakers', price:'$79', period:'/month', tier:'pro' },
+  annual: { name:'Annual Pro',      desc:'All features · 2 months free', price:'$599', period:'/year',  tier:'pro' },
+};
+
+function startCheckout(plan){
+  checkoutPlan = plan;
+  // If no pending registration, open login/register first
+  if(!pendingRegistration && !currentUser){
+    openModal('loginModal');
+    switchAuthTab('register');
+    return;
+  }
+  showPaymentModal(plan);
+}
+
+function showPaymentModal(plan){
+  const info = PLAN_INFO[plan] || PLAN_INFO.pro;
+  document.getElementById('payPlanName').textContent  = info.name;
+  document.getElementById('payPlanDesc').textContent  = info.desc;
+  document.getElementById('payPlanPrice').textContent = info.price;
+  document.getElementById('payPlanPeriod').textContent= info.period;
+  document.getElementById('payStep1').style.display   = '';
+  document.getElementById('payStep2').style.display   = 'none';
+  document.getElementById('payBtn').textContent = 'Start Free Trial →';
+  document.getElementById('payBtn').disabled = false;
+  clearEls('payErr');
+  // Reset card fields
+  ['cardNum','cardExp','cardCvc','cardName'].forEach(id=>{ document.getElementById(id).value=''; });
+  openModal('paymentModal');
+}
+
+function showPaywall(){
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('paywallScreen').style.display='flex';
+}
+
+// Card number formatting
+document.addEventListener('DOMContentLoaded', ()=>{
+  const cn = document.getElementById('cardNum');
+  if(cn) cn.addEventListener('input', e=>{
+    let v = e.target.value.replace(/\D/g,'').slice(0,16);
+    e.target.value = v.replace(/(.{4})/g,'$1 ').trim();
+    const icon = document.getElementById('cardIcon');
+    if(v.startsWith('4')) icon.textContent='💳';
+    else if(v.startsWith('5')) icon.textContent='💳';
+    else if(v.startsWith('3')) icon.textContent='💳';
+    else icon.textContent='💳';
+  });
+  const ce = document.getElementById('cardExp');
+  if(ce) ce.addEventListener('input', e=>{
+    let v = e.target.value.replace(/\D/g,'');
+    if(v.length>=2) v = v.slice(0,2)+'/'+v.slice(2,4);
+    e.target.value=v;
+  });
+});
+
+function processPayment(){
+  const num  = document.getElementById('cardNum').value.replace(/\s/g,'');
+  const exp  = document.getElementById('cardExp').value;
+  const cvc  = document.getElementById('cardCvc').value;
+  const name = document.getElementById('cardName').value.trim();
+  const err  = document.getElementById('payErr');
+  err.style.display='none';
+
+  if(num.length<15){ err.textContent='Please enter a valid card number.'; err.style.display='block'; return; }
+  if(!/^\d{2}\/\d{2}$/.test(exp)){ err.textContent='Please enter a valid expiry date (MM/YY).'; err.style.display='block'; return; }
+  if(cvc.length<3){ err.textContent='Please enter your CVC.'; err.style.display='block'; return; }
+  if(!name){ err.textContent='Please enter the name on your card.'; err.style.display='block'; return; }
+
+  // Show loading
+  document.getElementById('payStep1').style.display='none';
+  document.getElementById('payStep2').style.display='';
+
+  // Simulate payment processing (1.8s)
+  setTimeout(()=>{
+    closeModal('paymentModal');
+    const info    = PLAN_INFO[checkoutPlan] || PLAN_INFO.pro;
+    const tier    = info.tier;
+    const trialEnd= new Date(Date.now()+7*24*60*60*1000).toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+
+    // Save account if new registration
+    if(pendingRegistration){
+      const accounts = getAccounts();
+      accounts[pendingRegistration.email] = {
+        pass: pendingRegistration.pass,
+        name: pendingRegistration.name,
+        tier: tier,
+        plan: checkoutPlan,
+        subscribedAt: new Date().toISOString(),
+      };
+      saveAccounts(accounts);
+      currentUser = { email: pendingRegistration.email, name: pendingRegistration.name, tier };
+      pendingRegistration = null;
+    } else if(currentUser){
+      // Upgrading existing user
+      currentUser.tier = tier;
+      const accounts = getAccounts();
+      if(accounts[currentUser.email]) accounts[currentUser.email].tier = tier;
+      saveAccounts(accounts);
+    }
+    saveSession(currentUser);
+
+    // Show success
+    document.getElementById('successPlan').textContent  = info.name;
+    document.getElementById('successTrialEnd').textContent = trialEnd;
+    document.getElementById('successEmail').textContent = currentUser.email;
+    document.getElementById('paywallScreen').style.display='none';
+    document.getElementById('successScreen').style.display='flex';
+  }, 1800);
+}
+
+// ═══════════════════════════════════════════
+// DEV ACCESS
+// ═══════════════════════════════════════════
+function toggleDevForm(){ document.getElementById('devForm').classList.toggle('open'); }
+function checkDevPasscode(){
+  const val = document.getElementById('devPasscode').value.trim();
+  const errEl = document.getElementById('devError');
+  const okEl  = document.getElementById('devSuccess');
+  errEl.style.display='none'; okEl.style.display='none';
+  if(DEV_PASSCODES.includes(val)){
+    okEl.style.display='block';
+    currentUser = { email:'dev@empower.io', name:'Developer', tier:'dev' };
+    saveSession(currentUser);
+    setTimeout(()=>{
+      document.getElementById('paywallScreen').style.display='none';
+      launchApp();
+    }, 1200);
+  } else {
+    errEl.style.display='block';
+  }
+}
+
+// ═══════════════════════════════════════════
+// SESSION RESTORE
+// ═══════════════════════════════════════════
+(function restoreSession(){
+  const session = getSession();
+  if(session && session.email && session.tier){
+    currentUser = session;
+    // Hide paywall, launch directly
+    document.getElementById('paywallScreen').style.display='none';
+    // launchApp() will be called after DOM ready
+    window.addEventListener('DOMContentLoaded', ()=> launchApp());
+  }
+})();
+
+// ═══════════════════════════════════════════
+// APP LAUNCH & LOGOUT
+// ═══════════════════════════════════════════
+function doLogout(){
+  currentUser = null;
+  clearSession();
+  stopScan();
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('successScreen').style.display='none';
+  document.getElementById('paywallScreen').style.display='flex';
+}
+
+function launchApp(){
+  document.getElementById('paywallScreen').style.display='none';
+  document.getElementById('successScreen').style.display='none';
+  document.getElementById('appScreen').style.display='block';
+  const tier   = currentUser.tier;
+  const nav    = document.getElementById('navTierBadge');
+  const avatar = document.getElementById('navAvatar');
+  nav.textContent = tier==='dev'?'DEV':tier==='pro'?'PRO':'STARTER';
+  nav.className = 'nav-tier '+(tier==='dev'?'dev':tier==='pro'?'pro':'basic');
+  document.getElementById('navUserName').textContent = currentUser.name.split(' ')[0];
+  avatar.textContent = currentUser.name.charAt(0).toUpperCase();
+  document.getElementById('upgradeBanner').style.display = (tier==='basic') ? 'flex' : 'none';
+  const lock = document.getElementById('minProfitLock');
+  const minInput = document.getElementById('minProfit');
+  if(tier==='basic'){ lock.style.display='block'; minInput.disabled=true; }
+  else { lock.style.display='none'; minInput.disabled=false; }
+  if(tier==='basic'){ document.getElementById('pollInterval').value=30; document.getElementById('pollInterval').min=30; }
+  else { document.getElementById('pollInterval').min=10; }
+}
+
+// ═══════════════════════════════════════════
+// SCANNER CONFIG
+// ═══════════════════════════════════════════
+const BOOK_URLS = {
+  sportsbet:'https://www.sportsbet.com.au',ladbrokes:'https://www.ladbrokes.com.au',
+  bet365:'https://www.bet365.com.au',tab:'https://www.tab.com.au',
+  neds:'https://www.neds.com.au',betright:'https://www.betright.com.au',
+  betr:'https://www.betr.com.au',unibet:'https://www.unibet.com.au',
+  bluebet:'https://www.bluebet.com.au',playup:'https://www.playup.com.au',
+  dabble:'https://www.dabble.com.au',picklebet:'https://www.picklebet.com',
+  pointsbet:'https://www.pointsbet.com.au',draftstars:'https://www.draftstars.com.au',
+  boombet:'https://www.boombet.com.au',elitebet:'https://www.elitebet.com.au',
+  topbetta:'https://www.topbetta.com.au',palmerbet:'https://www.palmerbet.com',
+};
+const BASIC_BOOKS  = ['sportsbet','ladbrokes','bet365','tab','neds','unibet','bluebet','pointsbet','betr','betright'];
+const ALL_SPORTS   = [
+  {key:'aussierules_afl',label:'AFL',category:'AU'},
+  {key:'rugbyleague_nrl',label:'NRL',category:'AU'},
+  {key:'cricket_australia_domestic',label:'Cricket AU',category:'AU'},
+  {key:'cricket_icc_world_cup',label:'Cricket ICC',category:'AU'},
+  {key:'soccer_australia_aleague',label:'A-League',category:'AU'},
+  {key:'rugbyunion_super_rugby',label:'Super Rugby',category:'AU'},
+  {key:'basketball_nbl',label:'NBL',category:'AU'},
+  {key:'soccer_epl',label:'EPL',category:'INTL'},
+  {key:'soccer_uefa_champs_league',label:'UCL',category:'INTL'},
+  {key:'soccer_conmebol_copa_libertadores',label:'Copa Lib',category:'INTL'},
+  {key:'basketball_nba',label:'NBA',category:'INTL'},
+  {key:'americanfootball_nfl',label:'NFL',category:'INTL'},
+  {key:'baseball_mlb',label:'MLB',category:'INTL'},
+  {key:'icehockey_nhl',label:'NHL',category:'INTL'},
+  {key:'tennis_atp_french_open',label:'Tennis ATP',category:'INTL'},
+  {key:'tennis_wta_french_open',label:'Tennis WTA',category:'INTL'},
+  {key:'mma_mixed_martial_arts',label:'MMA',category:'INTL'},
+  {key:'boxing_boxing',label:'Boxing',category:'INTL'},
+];
+const BASIC_SPORTS = ['AFL','NRL','Cricket AU','A-League','Super Rugby'];
+const WINDOWS = {AFL:120,NRL:120,'Cricket AU':240,'Cricket ICC':300,'A-League':300,'Super Rugby':180,NBL:150,EPL:180,UCL:180,'Copa Lib':300,NBA:150,NFL:240,MLB:300,NHL:150,'Tennis ATP':90,'Tennis WTA':90,MMA:180,Boxing:240};
+const NOTES   = {AFL:'AFL moves fast on team news — 2 min window.',NRL:'NRL pricing volatile pre-game — 2–3 min.','Cricket AU':'Moderate liquidity — 4–8 min typical.','Cricket ICC':'ICC events well-traded — 4–6 min.','A-League':'Less liquid — 5–10 min windows.','Super Rugby':'Moderately liquid — 2–4 min.',NBL:'AU-focused, smaller gaps — 2–4 min.',EPL:'Globally traded — move immediately.',UCL:'High liquidity — 1–2 min max.','Copa Lib':'Emerging market — wider gaps possible.',NBA:'US books lead AU by 1–2 min — act fast.',NFL:'AU books lag US — 3–9 min window.',MLB:'Long season creates daily gaps.',NHL:'AU books slow to update — 3–6 min.','Tennis ATP':'Momentum shifts quickly — 1–2 min.','Tennis WTA':'Momentum shifts quickly — 1–2 min.',MMA:'Stable pre-fight, gaps on weigh-in news.',Boxing:'Stable lead-up, check close to event.'};
+
+let results=[],scanInterval=null,countdownInterval=null,nextScanIn=0,nextScanTimer=null,activeSportFilter='ALL';
+
+// ═══════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════
+function showError(msg){const el=document.getElementById('errBox');el.textContent=msg;el.style.display=msg?'block':'none';}
+function setStatus(text,mode){
+  document.getElementById('statusText').textContent=text;
+  const d=document.getElementById('sdot');
+  d.className='sdot'+(mode==='scanning'?' scanning':mode==='live'?' live':'');
+}
+function calcArb(outcomes){const s=outcomes.reduce((a,o)=>a+1/o.odds,0);return{impliedSum:s,profitPct:parseFloat(((1-s)*100).toFixed(3)),isArb:s<1};}
+function bestOddsPerOutcome(bookmakers,tier){
+  const allowedBooks=tier==='basic'?BASIC_BOOKS:null;
+  const map={};
+  for(const bk of bookmakers){
+    if(allowedBooks && !allowedBooks.some(k=>bk.key.includes(k)))continue;
+    const mkt=(bk.markets||[]).find(m=>m.key==='h2h');
+    if(!mkt)continue;
+    for(const oc of mkt.outcomes){
+      if(!map[oc.name]||oc.price>map[oc.name].odds){
+        map[oc.name]={label:oc.name,odds:oc.price,bookmaker:bk.title,bookmakerKey:bk.key,lastUpdate:mkt.last_update||bk.last_update||null};
+      }
+    }
+  }
+  return Object.values(map);
+}
+function withStakes(outcomes,bankroll){
+  const impl=outcomes.reduce((s,o)=>s+1/o.odds,0);
+  return outcomes.map(o=>({...o,stake:parseFloat(((1/o.odds/impl)*bankroll).toFixed(2)),payout:parseFloat(((1/o.odds/impl)*bankroll*o.odds).toFixed(2))}));
+}
+function bookUrl(key){for(const[k,url]of Object.entries(BOOK_URLS)){if((key||'').toLowerCase().includes(k))return url;}return null;}
+function stalenessClass(iso){if(!iso)return'ok';const age=(Date.now()-new Date(iso).getTime())/1000;if(age<30)return'fresh';if(age<120)return'ok';if(age<300)return'stale';return'very-stale';}
+function stalenessLabel(iso){if(!iso)return'no timestamp';const age=Math.floor((Date.now()-new Date(iso).getTime())/1000);if(age<5)return'just updated';if(age<60)return`${age}s ago`;if(age<3600)return`${Math.floor(age/60)}m ago`;return`${Math.floor(age/3600)}h ago`;}
+function fmtCountdown(ms){const s=Math.max(0,Math.floor(ms/1000));const m=Math.floor(s/60),r=s%60;return m>0?`${m}m ${String(r).padStart(2,'0')}s`:`${r}s`;}
+
+// ═══════════════════════════════════════════
+// FETCH
+// ═══════════════════════════════════════════
+async function fetchSport(apiKey,sportKey,sportLabel,bankroll){
+  const url=`https://api.the-odds-api.com/v4/sports/${sportKey}/odds/?apiKey=${apiKey}&regions=au&markets=h2h&oddsFormat=decimal`;
+  const resp=await fetch(url);
+  const remaining=resp.headers.get('x-requests-remaining');
+  if(!resp.ok){const err=await resp.json().catch(()=>({}));throw new Error(err.message||`HTTP ${resp.status}`);}
+  const data=await resp.json();
+  const tier=currentUser?currentUser.tier:'basic';
+  const opps=[];
+  for(const event of data){
+    if(!event.bookmakers||event.bookmakers.length<2)continue;
+    const outcomes=bestOddsPerOutcome(event.bookmakers,tier);
+    if(outcomes.length<2)continue;
+    const{impliedSum,profitPct,isArb}=calcArb(outcomes);
+    const windowSecs=WINDOWS[sportLabel]||180;
+    const existing=results.find(r=>r.id===event.id);
+    const detectedAt=existing?existing.detectedAt:Date.now();
+    opps.push({id:event.id,sport:sportLabel,match:`${event.home_team} vs ${event.away_team}`,commenceTime:event.commence_time,outcomes:withStakes(outcomes,bankroll),impliedSum,profitPct,isArb,windowSecs,detectedAt,expiresAt:detectedAt+windowSecs*1000,windowNote:NOTES[sportLabel]||'',time:new Date().toLocaleTimeString('en-AU'),anyStale:outcomes.some(o=>['stale','very-stale'].includes(stalenessClass(o.lastUpdate)))});
+  }
+  return{opps,remaining};
+}
+
+// ═══════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════
+function buildSportTabs(){
+  const tabs=document.getElementById('sportTabs');
+  const counts={};
+  results.forEach(r=>{counts[r.sport]=(counts[r.sport]||0)+1;});
+  let html=`<button class="sport-tab${activeSportFilter==='ALL'?' active':''}" onclick="setSportFilter('ALL')">All <span class="tab-count">${results.length}</span></button>`;
+  [...new Set(results.map(r=>r.sport))].sort().forEach(s=>{
+    html+=`<button class="sport-tab${activeSportFilter===s?' active':''}" onclick="setSportFilter('${s}')">${s} <span class="tab-count">${counts[s]||0}</span></button>`;
+  });
+  tabs.innerHTML=html;
+}
+function setSportFilter(s){activeSportFilter=s;renderFeed();buildSportTabs();}
+
+function renderFeed(){
+  const filterMode=document.getElementById('filterMode').value;
+  const bankroll=parseFloat(document.getElementById('bankroll').value)||1000;
+  const minProfit=parseFloat(document.getElementById('minProfit').value)||0;
+  const tier=currentUser?currentUser.tier:'basic';
+  let shown=results;
+  if(activeSportFilter!=='ALL')shown=shown.filter(o=>o.sport===activeSportFilter);
+  if(filterMode==='arb')shown=shown.filter(o=>o.isArb);
+  if(minProfit>0&&tier!=='basic')shown=shown.filter(o=>o.profitPct>=minProfit);
+  shown=[...shown].sort((a,b)=>b.profitPct-a.profitPct);
+  const basicLimited=(tier==='basic')&&shown.filter(o=>o.isArb).length>3;
+  let arbCount=0;
+  const feed=document.getElementById('feed');
+  const countEl=document.getElementById('feedCount');
+  countEl.textContent=shown.length;countEl.style.display=shown.length?'inline':'none';
+  if(!shown.length){feed.innerHTML='<div class="empty">No markets found.<br>Check your API key or no events are currently scheduled.</div>';return;}
+  const now=Date.now();
+  feed.innerHTML=shown.map((opp)=>{
+    const remaining=opp.expiresAt-now;
+    const pct=Math.max(0,Math.min(100,(remaining/(opp.windowSecs*1000))*100));
+    const timerClass=remaining<30000?'urgent':remaining<60000?'warning':'ok';
+    const barColor=remaining<30000?'#ff5252':remaining<60000?'#ffab00':'#00e676';
+    const dt=opp.commenceTime?new Date(opp.commenceTime).toLocaleString('en-AU',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+    const profit=opp.isArb?(opp.profitPct/100*bankroll).toFixed(2):null;
+    const uniqueBooks=[...new Set(opp.outcomes.map(o=>o.bookmakerKey))];
+    const expired=remaining<=0;
+    const isBasicBlurred=(tier==='basic')&&opp.isArb&&(()=>{if(opp.isArb){arbCount++;}return arbCount>3;})();
+    const outcomeHtml=opp.outcomes.map((o,oi)=>{
+      const sc=stalenessClass(o.lastUpdate);const sl=stalenessLabel(o.lastUpdate);const isBest=oi===0;
+      return `<div class="outcome${isBasicBlurred?' blurred':''}">
+        <div class="out-book">${o.bookmaker}</div>
+        <div class="out-label">${o.label}</div>
+        <div class="out-odds${isBest&&opp.isArb?' best':''}">${o.odds.toFixed(2)}</div>
+        <div class="out-stake">$${o.stake.toFixed(2)} → $${o.payout.toFixed(2)}</div>
+        <div class="out-updated ${sc}">● ${sl}</div>
+        ${isBasicBlurred?`<div class="blur-cta"><span>🔒 Pro only</span><button onclick="startCheckout('pro')">Upgrade</button></div>`:''}
+      </div>`;
+    }).join('');
+    return `<div class="card${opp.isArb?' arb':''}${opp.anyStale?' stale':''}" id="card-${opp.id}">
+      <div class="card-head">
+        <span class="sport-pill">${opp.sport}</span>
+        <span class="match-name">${opp.match}</span>
+        <span class="profit-pill${opp.isArb?' arb':' no-arb'}">${opp.isArb?'+'+opp.profitPct.toFixed(2)+'%':'Σ '+opp.impliedSum.toFixed(3)}</span>
+        ${profit?`<span class="profit-dollar">+$${profit}</span>`:''}
+        ${dt?`<span class="commence">${dt}</span>`:''}
+      </div>
+      <div class="outcomes">${outcomeHtml}</div>
+      <div class="card-mid">
+        <div class="countdown-wrap">
+          <span class="countdown-label">Act within</span>
+          <div class="progress-bar"><div class="progress-fill" id="bar-${opp.id}" style="width:${pct}%;background:${barColor}"></div></div>
+          <span class="countdown-time ${timerClass}" id="timer-${opp.id}">${expired?'EXPIRED':fmtCountdown(remaining)}</span>
+        </div>
+        ${opp.anyStale?`<span class="stale-warn">⚠ Stale prices — verify before placing</span>`:''}
+      </div>
+      <div class="card-foot">
+        <span class="foot-note">${opp.windowNote}</span>
+        <div class="book-links">${uniqueBooks.map(k=>{const t=opp.outcomes.find(o=>o.bookmakerKey===k).bookmaker;const u=bookUrl(k);return u?`<a class="book-link" href="${u}" target="_blank">${t} ↗</a>`:''}).join('')}</div>
+        <span class="implied">Σ ${opp.impliedSum.toFixed(4)} · ${opp.time}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function tickTimers(){
+  const now=Date.now();
+  for(const opp of results){
+    const timerEl=document.getElementById(`timer-${opp.id}`);
+    const barEl=document.getElementById(`bar-${opp.id}`);
+    if(!timerEl||!barEl)continue;
+    const remaining=opp.expiresAt-now;
+    const expired=remaining<=0;
+    const pct=Math.max(0,Math.min(100,(remaining/(opp.windowSecs*1000))*100));
+    const barColor=remaining<30000?'#ff5252':remaining<60000?'#ffab00':'#00e676';
+    timerEl.textContent=expired?'EXPIRED':fmtCountdown(remaining);
+    timerEl.className='countdown-time '+(remaining<30000?'urgent':remaining<60000?'warning':'ok');
+    barEl.style.width=pct+'%';barEl.style.background=barColor;
+  }
+}
+
+function updateStats(quota){
+  const bankroll=parseFloat(document.getElementById('bankroll').value)||1000;
+  const arbs=results.filter(o=>o.isArb);
+  document.getElementById('sTotal').textContent=results.length;
+  document.getElementById('sTotal').parentElement.classList.toggle('has-data',results.length>0);
+  document.getElementById('sArbs').textContent=arbs.length;
+  document.getElementById('sArbs').parentElement.classList.toggle('has-data',arbs.length>0);
+  const best=arbs.length?Math.max(...arbs.map(o=>o.profitPct)):null;
+  document.getElementById('sBest').textContent=best!==null?'+'+best.toFixed(2)+'%':'—';
+  document.getElementById('sBestDollar').textContent=best!==null?'+$'+(best/100*bankroll).toFixed(2):'—';
+  const sports=new Set(results.map(r=>r.sport));
+  document.getElementById('sSports').textContent=sports.size;
+  if(quota!=null)document.getElementById('sQuota').textContent=quota;
+  if(arbs.length>0)document.getElementById('sArbsSub').textContent=`Best: +${best.toFixed(2)}%`;
+}
+
+function showToast(title,body,isArb){
+  const t=document.getElementById('alertToast');
+  document.getElementById('toastTitle').textContent=title;
+  document.getElementById('toastBody').textContent=body;
+  t.className='alert-toast'+(isArb?' arb':'');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4500);
+}
+
+function startNextScanCountdown(secs){
+  nextScanIn=secs;
+  if(nextScanTimer)clearInterval(nextScanTimer);
+  nextScanTimer=setInterval(()=>{
+    nextScanIn--;
+    if(nextScanIn<=0){clearInterval(nextScanTimer);document.getElementById('nextScan').textContent='';}
+    else document.getElementById('nextScan').textContent=`Next scan in ${nextScanIn}s`;
+  },1000);
+  document.getElementById('nextScan').textContent=`Next scan in ${nextScanIn}s`;
+}
+
+async function runScan(){
+  const apiKey=document.getElementById('apiKey').value.trim();
+  const bankroll=parseFloat(document.getElementById('bankroll').value)||1000;
+  if(!apiKey){showError('Please enter your Odds API key from the-odds-api.com');return;}
+  showError('');
+  setStatus('Scanning all markets…','scanning');
+  document.getElementById('scanBtn').disabled=true;
+  const tier=currentUser?currentUser.tier:'basic';
+  const sportsToScan=tier==='basic'?ALL_SPORTS.filter(s=>BASIC_SPORTS.includes(s.label)):ALL_SPORTS;
+  let allOpps=[],lastQuota=null,errors=0;
+  for(const{key,label}of sportsToScan){
+    try{const{opps,remaining}=await fetchSport(apiKey,key,label,bankroll);allOpps=allOpps.concat(opps);if(remaining!==null)lastQuota=remaining;}
+    catch(e){if((e.message||'').includes('401')){showError('Invalid API key — get yours free at the-odds-api.com');setStatus('Failed','');document.getElementById('scanBtn').disabled=false;document.getElementById('liveBadge').style.display='none';return;}errors++;}
+  }
+  if(tier!=='basic'){
+    const prevArbIds=new Set(results.filter(o=>o.isArb).map(o=>o.id));
+    const newArbs=allOpps.filter(o=>o.isArb&&!prevArbIds.has(o.id));
+    if(newArbs.length){const best=newArbs.sort((a,b)=>b.profitPct-a.profitPct)[0];showToast(`🎯 ${newArbs.length} new arb${newArbs.length>1?'s':''} found!`,`${best.match} — +${best.profitPct.toFixed(2)}%`,true);}
+  }
+  results=allOpps;
+  updateStats(lastQuota);
+  buildSportTabs();
+  renderFeed();
+  const arbCount=allOpps.filter(o=>o.isArb).length;
+  setStatus(`Updated ${new Date().toLocaleTimeString('en-AU')} — ${allOpps.length} markets · ${arbCount} arb${arbCount!==1?'s':''}${errors?` · ${errors} sports unavailable`:''}`,arbCount>0?'live':'');
+  document.getElementById('scanBtn').disabled=false;
+  document.getElementById('liveBadge').style.display='flex';
+  const pollSecs=parseInt(document.getElementById('pollInterval').value)||30;
+  startNextScanCountdown(pollSecs);
+}
+
+function startScan(){
+  if(scanInterval)clearInterval(scanInterval);
+  if(countdownInterval)clearInterval(countdownInterval);
+  document.getElementById('stopBtn').style.display='';
+  runScan();
+  const pollSecs=parseInt(document.getElementById('pollInterval').value)||30;
+  scanInterval=setInterval(()=>{const s=parseInt(document.getElementById('pollInterval').value)||30;clearInterval(scanInterval);scanInterval=setInterval(()=>runScan(),s*1000);runScan();},pollSecs*1000);
+  countdownInterval=setInterval(tickTimers,1000);
+}
+
+function stopScan(){
+  if(scanInterval)clearInterval(scanInterval);
+  if(countdownInterval)clearInterval(countdownInterval);
+  if(nextScanTimer)clearInterval(nextScanTimer);
+  scanInterval=countdownInterval=nextScanTimer=null;
+  document.getElementById('stopBtn').style.display='none';
+  document.getElementById('liveBadge').style.display='none';
+  document.getElementById('nextScan').textContent='';
+  setStatus('Stopped','');
+}
+
+// Event listeners
+document.getElementById('filterMode').addEventListener('change',renderFeed);
+document.getElementById('bankroll').addEventListener('change',()=>{updateStats();renderFeed();});
+document.getElementById('devPasscode').addEventListener('keydown',e=>{if(e.key==='Enter')checkDevPasscode();});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    if(document.getElementById('loginModal').classList.contains('open')){
+      if(document.getElementById('panelLogin').style.display!=='none') doLogin();
+      else doRegister();
+    }
+    if(document.getElementById('paymentModal').classList.contains('open')) processPayment();
+    if(document.getElementById('forgotModal').classList.contains('open')) doForgotPassword();
+  }
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal-overlay.open').forEach(el=>closeModal(el.id));
+  }
+});
+</script>
+</body>
+</html>
+HTMLEOF
+echo "Done: $(wc -c < /mnt/user-data/outputs/ArbEdge-Pro-v2.html) bytes"
